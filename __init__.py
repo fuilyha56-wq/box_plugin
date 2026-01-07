@@ -23,7 +23,7 @@ __plugin_meta__ = PluginMetadata(
     - 支持自动撤回（可配置）
     - 支持保护名单（防止被开盒）
     """,
-    version="1.1.0",
+    version="1.2.0",
     author="ikun两年半",
     license="AGPL",
     repository_url="https://github.com/ikun-11451/box_plugin",

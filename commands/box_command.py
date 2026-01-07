@@ -34,25 +34,61 @@ class BoxCommand(PlusCommand):
             if hasattr(self.message, "message_segments"):
                 for segment in self.message.message_segments:
                     if segment.get("type") == "at":
-                        target_id = segment.get("data", {}).get("qq")
+                        # 尝试多种可能的字段名来获取用户ID
+                        data = segment.get("data", {})
+                        target_id = (data.get("qq") or
+                                   data.get("user_id") or
+                                   data.get("target"))
                         if target_id is not None:
                             target_id = str(target_id)
                         break
                     elif segment.get("type") == "text":
-                        # 检查文本中是否有QQ号
+                        # 检查文本中是否有QQ号或特殊格式的用户ID
                         text = segment.get("data", {}).get("text", "")
-                        if text.isdigit() and len(text) >= 5 and len(text) <= 11:
+                        # 检查是否是 @<昵称:QQ号> 格式
+                        if text.startswith("@<") and text.endswith(">") and ":" in text:
+                            # 尝试解析 @<昵称:QQ号> 格式
+                            try:
+                                # 提取QQ号部分
+                                parts = text[2:-1].split(":")
+                                if len(parts) == 2:
+                                    potential_id = parts[1]
+                                    if potential_id.isdigit() and len(potential_id) >= 5 and len(potential_id) <= 11:
+                                        target_id = potential_id
+                            except Exception:
+                                pass
+                        # 检查是否是纯数字QQ号
+                        elif text.isdigit() and len(text) >= 5 and len(text) <= 11:
                             target_id = text
-                            break
+                        break
             else:
                 # 如果没有message_segments，直接从参数中获取QQ号
                 text = args.get_raw().strip()
-                if text.isdigit() and len(text) >= 5 and len(text) <= 11:
+                # 检查是否是 @<昵称:QQ号> 格式
+                if text.startswith("@<") and text.endswith(">") and ":" in text:
+                    # 尝试解析 @<昵称:QQ号> 格式
+                    try:
+                        # 提取QQ号部分
+                        parts = text[2:-1].split(":")
+                        if len(parts) == 2:
+                            potential_id = parts[1]
+                            if potential_id.isdigit() and len(potential_id) >= 5 and len(potential_id) <= 11:
+                                target_id = potential_id
+                    except Exception:
+                        pass
+                # 检查是否是纯数字QQ号
+                elif text.isdigit() and len(text) >= 5 and len(text) <= 11:
                     target_id = text
         
-        # 如果没有指定目标，则默认为自己
+        # 如果没有指定目标，检查是否是群聊环境
         if not target_id:
-            target_id = self.message.user_info.user_id
+            # 在群聊中，如果没有@任何人且没有提供QQ号，则提示用户
+            if hasattr(self.message, "group_info") and self.message.group_info is not None:
+                await self.send_text("请@一个用户或提供QQ号来开盒")
+                return True, "未指定目标用户", True
+            else:
+                # 在私聊中，默认为自己开盒
+                target_id = self.message.user_info.user_id
             
         # 获取群ID（如果是群聊）
         if hasattr(self.message, "group_info") and self.message.group_info is not None:
