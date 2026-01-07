@@ -38,6 +38,11 @@ class BoxCore:
                 
             # 检查保护名单
             protect_ids = self.get_config("protection.protect_ids", [])
+            # 获取bot的QQ账号并加入保护名单
+            from src.plugin_system.apis.config_api import get_global_config
+            bot_qq = str(get_global_config("bot.qq_account", ""))
+            if bot_qq and bot_qq not in protect_ids:
+                protect_ids.append(bot_qq)
             if target_id in protect_ids and target_id != sender_id:
                 logger.info(f"用户 {target_id} 在保护名单中，无法开盒")
                 return None

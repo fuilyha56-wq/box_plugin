@@ -103,6 +103,11 @@ class BoxCommand(PlusCommand):
             
         # 检查保护名单
         protect_ids = self.get_config("protection.protect_ids", [])
+        # 获取bot的QQ账号并加入保护名单
+        from src.plugin_system.apis.config_api import get_global_config
+        bot_qq = str(get_global_config("bot.qq_account", ""))
+        if bot_qq and bot_qq not in protect_ids:
+            protect_ids.append(bot_qq)
         if target_id in protect_ids and target_id != self.message.user_info.user_id:
             await self.send_text("该用户受到保护，无法开盒")
             return True, "目标用户受保护", True
