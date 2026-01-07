@@ -1,0 +1,82 @@
+# 开盒插件配置文件示例
+# 注意：此文件仅为示例，请复制并重命名为 config.toml 后修改使用
+
+[basic]
+# 基础设置
+
+# 仅bot管理员可开盒他人
+# 但自己开盒自己不受限制
+only_admin = false
+
+# 重载插件时清空缓存
+# 当插件重载时，清空缓存的开盒卡片
+clean_cache = false
+
+[groups]
+# 群组设置
+
+# 自动开盒群聊白名单
+# 只自动开盒白名单群聊的新群友/主动退群的人，不填则默认所有群聊都启用自动开盒
+auto_box_groups = []
+
+[protection]
+# 保护设置
+
+# 信息保护用户
+# 开盒时，会忽略黑名单中的用户，注意：Bot和Bot管理员已默认被保护，除非Bot管理员亲自使用命令盒自己，否则无法被开盒
+protect_ids = []
+
+[display]
+# 显示设置
+
+# 信息显示选项
+# 通过设置 true/false 来启用或禁用每个选项
+qq_number = true    # QQ号
+nickname = true     # 昵称
+remark = true       # 备注
+group_nickname = true   # 群昵称
+group_title = true  # 群头衔
+gender = true       # 性别
+birthday = true     # 生日
+constellation = true    # 星座
+zodiac = true       # 生肖
+age = true          # 年龄
+blood_type = true   # 血型
+phone = false       # 电话
+email = false       # 邮箱
+hometown = true     # 家乡
+address = true      # 现居
+career = true       # 职业
+tags = true         # 个性标签
+risky_account = true    # 风险账号
+robot_account = true    # 机器人账号
+qq_vip = true       # QQVIP
+year_vip = true     # 年VIP
+vip_level = true    # VIP等级
+group_level = true  # 群等级
+join_time = true    # 加群时间
+qq_level = true     # QQ等级
+reg_time = true     # 注册时间
+signature = true    # 签名
+
+[recall]
+# 撤回设置
+
+# 撤回时间(秒)
+# 几秒后撤回开盒卡片，设为 0 则不撤回
+recall_time = 10
+
+[library]
+# 高级设置
+
+# Library Cookie
+# 高级配置，普通用户无需填写
+cookie = ""
+
+# 去敏化
+# 高级配置，普通用户无需填写
+desensitize = false
+
+# 敏感撤回时间
+# 高级配置，普通用户无需填写
+recall_desen_time = 5

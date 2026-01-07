@@ -51,7 +51,33 @@
 - `protect_ids`: 信息保护用户列表
 
 ### 显示设置
-- `display_options`: 信息显示选项
+- `qq_number`: 是否显示QQ号
+- `nickname`: 是否显示昵称
+- `remark`: 是否显示备注
+- `group_nickname`: 是否显示群昵称
+- `group_title`: 是否显示群头衔
+- `gender`: 是否显示性别
+- `birthday`: 是否显示生日
+- `constellation`: 是否显示星座
+- `zodiac`: 是否显示生肖
+- `age`: 是否显示年龄
+- `blood_type`: 是否显示血型
+- `phone`: 是否显示电话
+- `email`: 是否显示邮箱
+- `hometown`: 是否显示家乡
+- `address`: 是否显示现居
+- `career`: 是否显示职业
+- `tags`: 是否显示个性标签
+- `risky_account`: 是否显示风险账号
+- `robot_account`: 是否显示机器人账号
+- `qq_vip`: 是否显示QQVIP
+- `year_vip`: 是否显示年VIP
+- `vip_level`: 是否显示VIP等级
+- `group_level`: 是否显示群等级
+- `join_time`: 是否显示加群时间
+- `qq_level`: 是否显示QQ等级
+- `reg_time`: 是否显示注册时间
+- `signature`: 是否显示签名
 
 ### 撤回设置
 - `recall_time`: 撤回时间（秒）

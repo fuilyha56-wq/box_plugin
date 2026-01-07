@@ -66,22 +66,141 @@ class BoxPlugin(BasePlugin):
             ),
         },
         "display": {
-            "display_options": ConfigField(
-                type=list,
-                default=[
-                    "QQ号", "昵称", "备注", "群昵称", "群头衔", "性别", "生日", "星座", "生肖", 
-                    "年龄", "血型", "电话", "邮箱", "家乡", "现居", "职业", "个性标签", 
-                    "风险账号", "机器人账号", "QQVIP", "年VIP", "VIP等级", "群等级", 
-                    "加群时间", "QQ等级", "注册时间", "签名"
-                ],
-                description="信息显示选项",
-                hint="选择要显示的信息字段",
-                choices=[
-                    "QQ号", "昵称", "备注", "群昵称", "群头衔", "性别", "生日", "星座", "生肖", 
-                    "年龄", "血型", "电话", "邮箱", "家乡", "现居", "职业", "个性标签", 
-                    "风险账号", "机器人账号", "QQVIP", "年VIP", "VIP等级", "群等级", 
-                    "加群时间", "QQ等级", "注册时间", "签名"
-                ]
+            # 为每个显示选项创建配置字段，使用英文键名
+            "qq_number": ConfigField(
+                type=bool,
+                default=True,
+                description="显示QQ号"
+            ),
+            "nickname": ConfigField(
+                type=bool,
+                default=True,
+                description="显示昵称"
+            ),
+            "remark": ConfigField(
+                type=bool,
+                default=True,
+                description="显示备注"
+            ),
+            "group_nickname": ConfigField(
+                type=bool,
+                default=True,
+                description="显示群昵称"
+            ),
+            "group_title": ConfigField(
+                type=bool,
+                default=True,
+                description="显示群头衔"
+            ),
+            "gender": ConfigField(
+                type=bool,
+                default=True,
+                description="显示性别"
+            ),
+            "birthday": ConfigField(
+                type=bool,
+                default=True,
+                description="显示生日"
+            ),
+            "constellation": ConfigField(
+                type=bool,
+                default=True,
+                description="显示星座"
+            ),
+            "zodiac": ConfigField(
+                type=bool,
+                default=True,
+                description="显示生肖"
+            ),
+            "age": ConfigField(
+                type=bool,
+                default=True,
+                description="显示年龄"
+            ),
+            "blood_type": ConfigField(
+                type=bool,
+                default=True,
+                description="显示血型"
+            ),
+            "phone": ConfigField(
+                type=bool,
+                default=True,
+                description="显示电话"
+            ),
+            "email": ConfigField(
+                type=bool,
+                default=True,
+                description="显示邮箱"
+            ),
+            "hometown": ConfigField(
+                type=bool,
+                default=True,
+                description="显示家乡"
+            ),
+            "address": ConfigField(
+                type=bool,
+                default=True,
+                description="显示现居"
+            ),
+            "career": ConfigField(
+                type=bool,
+                default=True,
+                description="显示职业"
+            ),
+            "tags": ConfigField(
+                type=bool,
+                default=True,
+                description="显示个性标签"
+            ),
+            "risky_account": ConfigField(
+                type=bool,
+                default=True,
+                description="显示风险账号"
+            ),
+            "robot_account": ConfigField(
+                type=bool,
+                default=True,
+                description="显示机器人账号"
+            ),
+            "qq_vip": ConfigField(
+                type=bool,
+                default=True,
+                description="显示QQVIP"
+            ),
+            "year_vip": ConfigField(
+                type=bool,
+                default=True,
+                description="显示年VIP"
+            ),
+            "vip_level": ConfigField(
+                type=bool,
+                default=True,
+                description="显示VIP等级"
+            ),
+            "group_level": ConfigField(
+                type=bool,
+                default=True,
+                description="显示群等级"
+            ),
+            "join_time": ConfigField(
+                type=bool,
+                default=True,
+                description="显示加群时间"
+            ),
+            "qq_level": ConfigField(
+                type=bool,
+                default=True,
+                description="显示QQ等级"
+            ),
+            "reg_time": ConfigField(
+                type=bool,
+                default=True,
+                description="显示注册时间"
+            ),
+            "signature": ConfigField(
+                type=bool,
+                default=True,
+                description="显示签名"
             ),
         },
         "recall": {

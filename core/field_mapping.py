@@ -281,3 +281,37 @@ KEY_TO_LABEL: dict[str, str] = {f["key"]: f["label"] for f in FIELD_MAPPING}
 
 # 所有可用的中文标签
 ALL_LABELS: list[str] = [f["label"] for f in FIELD_MAPPING]
+
+# 中文标签到英文键名的映射
+LABEL_TO_CONFIG_KEY: dict[str, str] = {
+    "QQ号": "qq_number",
+    "昵称": "nickname",
+    "备注": "remark",
+    "群昵称": "group_nickname",
+    "群头衔": "group_title",
+    "性别": "gender",
+    "生日": "birthday",
+    "星座": "constellation",
+    "生肖": "zodiac",
+    "年龄": "age",
+    "血型": "blood_type",
+    "电话": "phone",
+    "邮箱": "email",
+    "家乡": "hometown",
+    "现居": "address",
+    "职业": "career",
+    "个性标签": "tags",
+    "风险账号": "risky_account",
+    "机器人账号": "robot_account",
+    "QQVIP": "qq_vip",
+    "年VIP": "year_vip",
+    "VIP等级": "vip_level",
+    "群等级": "group_level",
+    "加群时间": "join_time",
+    "QQ等级": "qq_level",
+    "注册时间": "reg_time",
+    "签名": "signature",
+}
+
+# 英文键名到中文标签的映射
+CONFIG_KEY_TO_LABEL: dict[str, str] = {v: k for k, v in LABEL_TO_CONFIG_KEY.items()}

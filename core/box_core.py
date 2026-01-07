@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from src.common.logger import get_logger
 from .draw import CardMaker
-from .field_mapping import FIELD_MAPPING, LABEL_TO_KEY
+from .field_mapping import FIELD_MAPPING, LABEL_TO_KEY, ALL_LABELS, LABEL_TO_CONFIG_KEY
 from .utils import get_avatar, render_digest
 
 logger = get_logger("box_plugin.core")
@@ -126,11 +126,17 @@ class BoxCore:
         stranger_info = user_info.get("stranger_info", {})
         member_info = user_info.get("member_info", {})
         
-        # 将 display_options 中的中文名转换为英文字段名集合
-        display_options = self.get_config("display.display_options", [])
-        enabled_keys = {
-            LABEL_TO_KEY.get(label, label) for label in display_options
-        }
+        # 获取所有显示选项的配置，根据true/false值决定是否显示
+        enabled_keys = set()
+        for label in ALL_LABELS:
+            # 获取配置键名
+            config_key = LABEL_TO_CONFIG_KEY.get(label, label)
+            # 获取配置值，默认为True（保持向后兼容）
+            is_enabled = self.get_config(f"display.{config_key}", True)
+            if is_enabled:
+                # 将启用的中文标签转换为英文字段名
+                key = LABEL_TO_KEY.get(label, label)
+                enabled_keys.add(key)
 
         for field in FIELD_MAPPING:
             key = field["key"]
