@@ -4,7 +4,6 @@ from src.plugin_system import (
     ChatType,
     plugin_manage_api,
 )
-from src.plugin_system.utils.permission_decorators import require_permission
 from src.plugin_system.apis.permission_api import permission_api
 from src.common.logger import get_logger
 from typing import Tuple, Optional
@@ -21,7 +20,6 @@ class BoxCommand(PlusCommand):
     chat_type_allow = ChatType.ALL
     intercept_message = True
     
-    @require_permission("plugins.box_plugin.can_box")
     async def execute(self, args: CommandArgs) -> Tuple[bool, Optional[str], bool]:
         """执行开盒命令"""
         # 获取目标用户ID
