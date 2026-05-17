@@ -2,6 +2,11 @@
 
 ## [2.0.0] - 2026-05-17
 
+### 修复
+- 修复可爱字体下载 URL 失效（上游仓库默认分支变更：`master/font/` → `main/core/resource/`）
+- 字体下载新增**已知失效 URL 自动迁移**机制：检测到旧 URL 时自动改用最新默认地址
+- 字体下载新增**主 URL 失败自动回退到默认 URL**的兜底逻辑
+
 ### 重大变更
 - 全面适配 **Neo-MoFox** 插件系统规范（`src.app.plugin_system` 公共入口）
 - 许可证从 AGPL 改为 **GPL-3.0**，与 context_bridge_tool 保持一致

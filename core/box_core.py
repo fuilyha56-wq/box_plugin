@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from src.app.plugin_system.api import adapter_api
 from src.app.plugin_system.api.log_api import get_logger
 
-from ..config import BoxPluginConfig
+from ..config import DEFAULT_CUTE_FONT_URL, DEFAULT_EMOJI_FONT_URL, BoxPluginConfig
 from .draw import CardMaker
 from .field_mapping import (
     ALL_LABELS,
@@ -20,6 +20,13 @@ from .field_mapping import (
     get_zodiac,
 )
 from .utils import download_file, get_avatar, render_digest
+
+
+# 已知失效的历史 URL 片段，命中即视为旧默认值，自动改用最新默认 URL
+_DEPRECATED_CUTE_FONT_FRAGMENTS: tuple[str, ...] = (
+    "astrbot_plugin_box@master/font/",
+)
+_DEPRECATED_EMOJI_FONT_FRAGMENTS: tuple[str, ...] = ()
 
 if TYPE_CHECKING:
     from ..plugin import BoxPlugin
@@ -62,6 +69,39 @@ class BoxCore:
             return config
         return BoxPluginConfig()
 
+    @staticmethod
+    def _resolve_font_url(
+        configured_url: str,
+        default_url: str,
+        deprecated_fragments: tuple[str, ...],
+    ) -> str:
+        """若配置中的 URL 命中已知失效片段，则自动回退到最新默认 URL。"""
+        if not configured_url:
+            return default_url
+        for fragment in deprecated_fragments:
+            if fragment in configured_url:
+                logger.warning(
+                    "检测到失效的历史字体 URL，已自动改用最新默认地址: "
+                    f"{configured_url} -> {default_url}"
+                )
+                return default_url
+        return configured_url
+
+    async def _download_font(
+        self,
+        primary_url: str,
+        fallback_url: str,
+        target_path: Path,
+        timeout: float,
+    ) -> bool:
+        """下载字体文件；主 URL 失败时自动回退到默认 URL。"""
+        if primary_url and await download_file(primary_url, target_path, timeout=timeout):
+            return True
+        if fallback_url and fallback_url != primary_url:
+            logger.info(f"主 URL 下载失败，回退到默认地址: {fallback_url}")
+            return await download_file(fallback_url, target_path, timeout=timeout)
+        return False
+
     async def prepare_resources(self) -> None:
         """确保字体资源就绪，并构建卡片渲染器。"""
         config = self._config()
@@ -70,10 +110,16 @@ class BoxCore:
 
         if not cute_font_path.is_file() and config.font.cute_font_url:
             logger.info("中文字体不存在，尝试下载…")
-            await download_file(
+            cute_url = self._resolve_font_url(
                 config.font.cute_font_url,
+                DEFAULT_CUTE_FONT_URL,
+                _DEPRECATED_CUTE_FONT_FRAGMENTS,
+            )
+            await self._download_font(
+                cute_url,
+                DEFAULT_CUTE_FONT_URL,
                 cute_font_path,
-                timeout=config.font.download_timeout,
+                config.font.download_timeout,
             )
 
         emoji_target: Path | None = emoji_font_path
@@ -81,10 +127,16 @@ class BoxCore:
             emoji_target = None
         elif not emoji_font_path.is_file() and config.font.emoji_font_url:
             logger.info("Emoji 字体不存在，尝试下载…")
-            ok = await download_file(
+            emoji_url = self._resolve_font_url(
                 config.font.emoji_font_url,
+                DEFAULT_EMOJI_FONT_URL,
+                _DEPRECATED_EMOJI_FONT_FRAGMENTS,
+            )
+            ok = await self._download_font(
+                emoji_url,
+                DEFAULT_EMOJI_FONT_URL,
                 emoji_font_path,
-                timeout=config.font.download_timeout,
+                config.font.download_timeout,
             )
             if not ok:
                 emoji_target = None
