@@ -1,0 +1,43 @@
+{
+    "name": "box_plugin",
+    "version": "2.0.0",
+    "description": "开盒插件：基于 OneBot 协议获取 QQ 用户信息，并以图片卡片形式展示",
+    "author": "Lycoris&ikun",
+    "license": "GPL-3.0",
+    "dependencies": {
+        "plugins": [],
+        "components": []
+    },
+    "include": [
+        {
+            "component_type": "command",
+            "component_name": "盒",
+            "description": "开盒指定用户，生成信息卡片图片",
+            "dependencies": []
+        },
+        {
+            "component_type": "event_handler",
+            "component_name": "box_group_member_handler",
+            "description": "群成员入群/退群事件自动开盒",
+            "dependencies": []
+        }
+    ],
+    "entry_point": "plugin.py",
+    "min_core_version": "1.0.0",
+    "python_dependencies": [
+        "Pillow>=9.0.0",
+        "emoji>=2.0.0",
+        "zhdate>=0.1.0",
+        "httpx>=0.24.0"
+    ],
+    "dependencies_required": true,
+    "display_name": "开盒插件",
+    "categories": [
+        "fun"
+    ],
+    "tags": [
+        "box",
+        "qq",
+        "user-info"
+    ]
+}

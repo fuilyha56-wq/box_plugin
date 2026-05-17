@@ -1,7 +1,9 @@
-"""字段映射配置 - 顺序决定显示顺序"""
+"""字段映射配置 —— 列表顺序决定开盒卡片的显示顺序。"""
+
+from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Callable, Optional
+from typing import Any
 
 # 辅助函数定义
 def get_blood_type(num: int) -> str:
@@ -282,7 +284,7 @@ KEY_TO_LABEL: dict[str, str] = {f["key"]: f["label"] for f in FIELD_MAPPING}
 # 所有可用的中文标签
 ALL_LABELS: list[str] = [f["label"] for f in FIELD_MAPPING]
 
-# 中文标签到英文键名的映射
+# 中文标签到英文配置键名的映射
 LABEL_TO_CONFIG_KEY: dict[str, str] = {
     "QQ号": "qq_number",
     "昵称": "nickname",
@@ -313,5 +315,12 @@ LABEL_TO_CONFIG_KEY: dict[str, str] = {
     "签名": "signature",
 }
 
-# 英文键名到中文标签的映射
+# 英文配置键名到中文标签的映射
 CONFIG_KEY_TO_LABEL: dict[str, str] = {v: k for k, v in LABEL_TO_CONFIG_KEY.items()}
+
+# 英文配置键名（display section 字段名）-> 英文字段 key
+CONFIG_KEY_TO_KEY: dict[str, str] = {
+    config_key: LABEL_TO_KEY[label]
+    for label, config_key in LABEL_TO_CONFIG_KEY.items()
+    if label in LABEL_TO_KEY
+}

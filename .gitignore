@@ -1,0 +1,15 @@
+# 插件运行期数据目录（缓存与字体）
+data/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 本地配置文件副本（请使用 config/plugins/box_plugin/config.toml）
+config.toml
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store

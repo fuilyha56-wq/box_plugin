@@ -1,48 +1,48 @@
 # 开盒插件更新日志
 
+## [2.0.0] - 2026-05-17
+
+### 重大变更
+- 全面适配 **Neo-MoFox** 插件系统规范（`src.app.plugin_system` 公共入口）
+- 许可证从 AGPL 改为 **GPL-3.0**，与 context_bridge_tool 保持一致
+- 作者署名更新为 **Lycoris&ikun**
+
+### 新增
+- 新增 [`manifest.json`](manifest.json:1)，按规范声明组件类型 / 签名 / Python 依赖
+- 新增 [`config.py`](config.py:1)：使用 `BaseConfig + SectionBase + @config_section` 定义结构化配置
+- 新增 [`config.example.toml`](config.example.toml:1)：与配置类同步的示例文件
+- 字体首次运行**自动从远端下载**到 `data/fonts/`，发布包不再随附 4MB 字体
+- 新增 `[adapter]` 配置：可自定义 Adapter 签名与 API 超时
+- 新增 `[font]` 配置：可自定义中文 / Emoji 字体下载 URL 与超时
+- `BoxCommand` 使用 `BaseCommand` + `@cmd_route` + `match()` 同时匹配 “盒” 与 “开盒”
+- `GroupMemberHandler` 使用 `BaseEventHandler`，订阅 `ON_NOTICE_RECEIVED`，返回 `EventDecision`
+- 引入 `httpx` 取代 `aiohttp`，并加入 `requirements.txt`
+
+### 修改
+- 用 `adapter_api.send_adapter_command` 替换旧的 `send_api.adapter_command_to_stream`
+- 所有日志改用 `src.app.plugin_system.api.log_api.get_logger`
+- 全部插件内部模块改用**相对导入**（`from ..config import ...`）
+- `CardMaker` 接受外部传入字体路径，并在文件不存在时回退到 PIL 默认字体
+
+### 移除
+- 移除 `core/resource/` 下的字体文件（约 3.7MB）
+- 移除旧的 `tests/`、`docs/`（与新结构不再兼容）
+- 移除旧的 `__init__.py` 中 `PluginMetadata` 风格元数据，统一由 `manifest.json` 提供
+
 ## [1.2.0] - 2026-01-07
 
 ### 修复
-- 修复@别人开盒显示自己身份的问题
-- 修复@<昵称:QQ号>格式解析问题
-- 自动将Bot加入保护名单，防止被真开盒
+- 修复 @ 别人开盒显示自己身份的问题
+- 修复 `@<昵称:QQ号>` 格式解析问题
+- 自动将 Bot 加入保护名单
 
 ## [1.1.0] - 2026-01-07
 
 ### 修改
-- 重构显示选项配置格式，使用英文键名和独立的true/false配置项替代原有的字符串列表
-- 更新配置文件示例和文档说明
+- 重构显示选项配置格式，使用英文键名独立的 true/false 配置项
 
 ## [1.0.0] - 2026-01-06
 
 ### 新增
-- 实现基本开盒功能
-- 支持命令 `/盒` 和 `/开盒`
-- 支持@用户和QQ号两种开盒方式
-- 实现开盒卡片图片生成
-- 支持自定义显示字段
-- 支持自动撤回功能
-- 支持保护名单设置
-- 完整的配置系统
-- 支持缓存机制提高性能
-
-### 功能
-- 用户信息获取（基础信息、群信息、个人资料等）
-- 图片卡片生成（包含头像、信息展示、Emoji支持）
-- 权限控制（管理员限制、保护名单）
-- 自动化功能
-- 配置管理（通过WebUI或配置文件）
-- 日志记录和错误处理
-
-### 技术特性
-- 基于MoFox插件系统开发
-- 模块化设计，易于维护和扩展
-- 异步处理提高性能
-- 完整的异常处理机制
-- 支持Emoji和中文显示
-- 缓存机制优化重复开盒性能
-
-### 依赖
-- Pillow >= 9.0.0
-- emoji >= 2.0.0
-- zhdate >= 0.1.0
+- 实现基本开盒功能，支持 `/盒` 与 `/开盒`
+- 实现开盒卡片图片生成、缓存机制、撤回功能与保护名单
