@@ -62,6 +62,8 @@ class BoxCore:
         self.data_dir = self.plugin_dir / "data"
         self.cache_dir = self.data_dir / "cache"
         self.font_dir = self.data_dir / "fonts"
+        # 打包内字体目录（full 版本会预置字体到此目录）
+        self.bundled_font_dir = self.plugin_dir / "font"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.font_dir.mkdir(parents=True, exist_ok=True)
         self.renderer: CardMaker | None = None
@@ -110,6 +112,28 @@ class BoxCore:
             return await download_file(fallback_url, target_path, timeout=timeout)
         return False
 
+    def _adopt_bundled_fonts(self) -> None:
+        """如果插件目录下有打包的 ``font/`` 目录（full 版本），复制到 data/fonts。
+
+        这样 full 版本无需任何网络下载即可启动；普通版没有 ``font/`` 目录，跳过。
+        """
+        if not self.bundled_font_dir.is_dir():
+            return
+        for filename in (
+            _CUTE_FONT_FILENAME,
+            _EMOJI_FONT_FILENAME,
+            _LATIN_FONT_FILENAME,
+            _CJK_KR_FONT_FILENAME,
+        ):
+            src = self.bundled_font_dir / filename
+            dst = self.font_dir / filename
+            if src.is_file() and not dst.is_file():
+                try:
+                    shutil.copyfile(src, dst)
+                    logger.info(f"已采用打包字体: {filename}")
+                except OSError as exc:
+                    logger.warning(f"复制打包字体失败 {filename}: {exc}")
+
     async def prepare_resources(self) -> None:
         """确保字体资源就绪，并构建卡片渲染器。"""
         config = self._config()
@@ -117,6 +141,9 @@ class BoxCore:
         emoji_font_path = self.font_dir / _EMOJI_FONT_FILENAME
         latin_font_path = self.font_dir / _LATIN_FONT_FILENAME
         cjk_kr_font_path = self.font_dir / _CJK_KR_FONT_FILENAME
+
+        # full 版本：直接采用插件内置字体，跳过下载
+        self._adopt_bundled_fonts()
 
         # 下载可爱字体
         if not cute_font_path.is_file() and config.font.cute_font_url:
