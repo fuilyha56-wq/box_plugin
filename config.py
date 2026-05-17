@@ -12,7 +12,7 @@ from src.app.plugin_system.base import BaseConfig, Field, SectionBase, config_se
 
 # 默认字体下载地址（jsDelivr 镜像 GitHub Raw，可在 config 中覆盖）
 DEFAULT_CUTE_FONT_URL: str = (
-    "https://cdn.jsdelivr.net/gh/Zhalslar/astrbot_plugin_box@master/font/"
+    "https://cdn.jsdelivr.net/gh/Zhalslar/astrbot_plugin_box@main/core/resource/"
     "%E5%8F%AF%E7%88%B1%E5%AD%97%E4%BD%93.ttf"
 )
 DEFAULT_EMOJI_FONT_URL: str = (

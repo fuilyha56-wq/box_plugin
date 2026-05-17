@@ -60,7 +60,7 @@ api_timeout = 20.0
 
 [font]
 # 首次运行时自动下载到 plugin_dir/data/fonts/，避免插件包体积过大
-cute_font_url = "https://cdn.jsdelivr.net/gh/Zhalslar/astrbot_plugin_box@master/font/%E5%8F%AF%E7%88%B1%E5%AD%97%E4%BD%93.ttf"
+cute_font_url = "https://cdn.jsdelivr.net/gh/Zhalslar/astrbot_plugin_box@main/core/resource/%E5%8F%AF%E7%88%B1%E5%AD%97%E4%BD%93.ttf"
 emoji_font_url = "https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/fonts/NotoColorEmoji.ttf"
 download_timeout = 30.0
 # 是否跳过 Emoji 字体下载（启用后所有字符都用中文字体绘制）
