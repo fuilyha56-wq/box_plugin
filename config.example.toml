@@ -65,3 +65,7 @@ emoji_font_url = "https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/fonts/
 download_timeout = 30.0
 # 是否跳过 Emoji 字体下载（启用后所有字符都用中文字体绘制）
 skip_emoji_font = false
+# 拉丁/俄语/希腊语 fallback 字体（覆盖俄文名、希腊符号等）
+latin_font_url = "https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io@main/fonts/NotoSans/full/ttf/NotoSans-Regular.ttf"
+# 韩语/日语假名 fallback 字体（覆盖韩文昵称、日文片假名等）
+cjk_kr_font_url = "https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/SubsetOTF/KR/NotoSansKR-Regular.otf"

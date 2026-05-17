@@ -18,6 +18,16 @@ DEFAULT_CUTE_FONT_URL: str = (
 DEFAULT_EMOJI_FONT_URL: str = (
     "https://cdn.jsdelivr.net/gh/googlefonts/noto-emoji@main/fonts/NotoColorEmoji.ttf"
 )
+# 拉丁/俄语/希腊等 fallback（Noto Sans Regular，825 KB）
+DEFAULT_LATIN_FONT_URL: str = (
+    "https://cdn.jsdelivr.net/gh/notofonts/notofonts.github.io@main/fonts/NotoSans/full/ttf/"
+    "NotoSans-Regular.ttf"
+)
+# 韩语/日语假名 fallback（Noto Sans KR Subset，4.5 MB）
+DEFAULT_CJK_KR_FONT_URL: str = (
+    "https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/SubsetOTF/KR/"
+    "NotoSansKR-Regular.otf"
+)
 
 
 class BoxPluginConfig(BaseConfig):
@@ -182,6 +192,18 @@ class BoxPluginConfig(BaseConfig):
             default=False,
             description="是否跳过 Emoji 字体下载（仅使用中文字体绘制所有字符）",
             label="跳过 Emoji 字体",
+            tag="general",
+        )
+        latin_font_url: str = Field(
+            default=DEFAULT_LATIN_FONT_URL,
+            description="拉丁/俄语/希腊语 fallback 字体 (.ttf/.otf)，覆盖日文/俄文名等",
+            label="Latin Fallback 字体 URL",
+            tag="general",
+        )
+        cjk_kr_font_url: str = Field(
+            default=DEFAULT_CJK_KR_FONT_URL,
+            description="韩语/日语假名 fallback 字体 (.otf)，覆盖韩文昵称等",
+            label="韩语/日语 Fallback 字体 URL",
             tag="general",
         )
 

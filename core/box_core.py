@@ -9,7 +9,13 @@ from typing import TYPE_CHECKING, Any
 from src.app.plugin_system.api import adapter_api
 from src.app.plugin_system.api.log_api import get_logger
 
-from ..config import DEFAULT_CUTE_FONT_URL, DEFAULT_EMOJI_FONT_URL, BoxPluginConfig
+from ..config import (
+    DEFAULT_CJK_KR_FONT_URL,
+    DEFAULT_CUTE_FONT_URL,
+    DEFAULT_EMOJI_FONT_URL,
+    DEFAULT_LATIN_FONT_URL,
+    BoxPluginConfig,
+)
 from .draw import CardMaker
 from .field_mapping import (
     ALL_LABELS,
@@ -37,6 +43,8 @@ logger = get_logger("box_plugin.core")
 # 字体文件名（保存到 plugin_dir/data/fonts/ 下）
 _CUTE_FONT_FILENAME = "cute_font.ttf"
 _EMOJI_FONT_FILENAME = "NotoColorEmoji.ttf"
+_LATIN_FONT_FILENAME = "NotoSans-Regular.ttf"
+_CJK_KR_FONT_FILENAME = "NotoSansKR-Regular.otf"
 
 
 class BoxCore:
@@ -107,7 +115,10 @@ class BoxCore:
         config = self._config()
         cute_font_path = self.font_dir / _CUTE_FONT_FILENAME
         emoji_font_path = self.font_dir / _EMOJI_FONT_FILENAME
+        latin_font_path = self.font_dir / _LATIN_FONT_FILENAME
+        cjk_kr_font_path = self.font_dir / _CJK_KR_FONT_FILENAME
 
+        # 下载可爱字体
         if not cute_font_path.is_file() and config.font.cute_font_url:
             logger.info("中文字体不存在，尝试下载…")
             cute_url = self._resolve_font_url(
@@ -122,6 +133,7 @@ class BoxCore:
                 config.font.download_timeout,
             )
 
+        # 下载 emoji 字体
         emoji_target: Path | None = emoji_font_path
         if config.font.skip_emoji_font:
             emoji_target = None
@@ -141,9 +153,31 @@ class BoxCore:
             if not ok:
                 emoji_target = None
 
+        # 下载 Latin fallback 字体（俄/希腊/拉丁扩展）
+        if not latin_font_path.is_file() and config.font.latin_font_url:
+            logger.info("Latin fallback 字体不存在，尝试下载…")
+            await self._download_font(
+                config.font.latin_font_url,
+                DEFAULT_LATIN_FONT_URL,
+                latin_font_path,
+                config.font.download_timeout,
+            )
+
+        # 下载韩语/日语假名 fallback 字体
+        if not cjk_kr_font_path.is_file() and config.font.cjk_kr_font_url:
+            logger.info("韩语/日语 fallback 字体不存在，尝试下载…")
+            await self._download_font(
+                config.font.cjk_kr_font_url,
+                DEFAULT_CJK_KR_FONT_URL,
+                cjk_kr_font_path,
+                config.font.download_timeout,
+            )
+
         self.renderer = CardMaker(
             cute_font_path=cute_font_path if cute_font_path.is_file() else None,
             emoji_font_path=emoji_target if (emoji_target and emoji_target.is_file()) else None,
+            latin_font_path=latin_font_path if latin_font_path.is_file() else None,
+            cjk_kr_font_path=cjk_kr_font_path if cjk_kr_font_path.is_file() else None,
         )
 
     # ------------------------------------------------------------------ #

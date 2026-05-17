@@ -6,6 +6,16 @@
 - 修复可爱字体下载 URL 失效（上游仓库默认分支变更：`master/font/` → `main/core/resource/`）
 - 字体下载新增**已知失效 URL 自动迁移**机制：检测到旧 URL 时自动改用最新默认地址
 - 字体下载新增**主 URL 失败自动回退到默认 URL**的兜底逻辑
+- 修复 QQ 等级 emoji（皇冠/太阳/月亮/星星）无法显示的问题：
+  - `NotoColorEmoji.ttf` 是 CBDT 位图字体，必须用 strike 尺寸 109 加载，并启用 `embedded_color=True`
+  - emoji 在独立画布渲染后裁剪缩放贴回，行高更稳定
+
+### 新增
+- 多字体路由：按字符 cmap 自动选择 `cute → cjk_kr → latin` 字体
+- 新增 **NotoSans Regular** fallback（825 KB）：覆盖**俄语 / 希腊 / 拉丁扩展**等可爱字体未覆盖的字符
+- 新增 **NotoSansKR Regular** fallback（4.5 MB）：覆盖**韩语昵称、日语片假名**等
+- 新增 `latin_font_url` / `cjk_kr_font_url` 两项配置，可自定义下载地址
+- 运行时新增 `fonttools` 依赖，用于精确读取字体 cmap
 
 ### 重大变更
 - 全面适配 **Neo-MoFox** 插件系统规范（`src.app.plugin_system` 公共入口）
