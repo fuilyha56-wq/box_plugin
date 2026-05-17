@@ -31,6 +31,10 @@ logger = get_logger("box_plugin.core")
 _CUTE_FONT_FILENAME = "cute_font.ttf"
 _EMOJI_FONT_FILENAME = "NotoColorEmoji.ttf"
 
+# 内置字体（仅在 -full 版本中存在；标准版需运行时下载）
+_BUILTIN_CUTE_FONT_NAME = "可爱字体.ttf"
+_BUILTIN_EMOJI_FONT_NAME = "NotoColorEmoji.ttf"
+
 
 class BoxCore:
     """开盒核心：负责字体准备、用户信息获取与卡片渲染。"""
@@ -63,12 +67,25 @@ class BoxCore:
         return BoxPluginConfig()
 
     async def prepare_resources(self) -> None:
-        """确保字体资源就绪，并构建卡片渲染器。"""
+        """确保字体资源就绪，并构建卡片渲染器。
+
+        优先使用插件包内置的 ``core/resource/`` 字体（-full 版本）；
+        若不存在则按照配置从 ``cute_font_url``/``emoji_font_url`` 下载到
+        ``plugin_dir/data/fonts/``。
+        """
         config = self._config()
+        builtin_dir = self.plugin_dir / "core" / "resource"
+        builtin_cute = builtin_dir / _BUILTIN_CUTE_FONT_NAME
+        builtin_emoji = builtin_dir / _BUILTIN_EMOJI_FONT_NAME
+
         cute_font_path = self.font_dir / _CUTE_FONT_FILENAME
         emoji_font_path = self.font_dir / _EMOJI_FONT_FILENAME
 
-        if not cute_font_path.is_file() and config.font.cute_font_url:
+        # 优先使用内置字体（-full 版本随包提供）
+        if builtin_cute.is_file():
+            cute_font_path = builtin_cute
+            logger.info(f"使用内置中文字体: {builtin_cute}")
+        elif not cute_font_path.is_file() and config.font.cute_font_url:
             logger.info("中文字体不存在，尝试下载…")
             await download_file(
                 config.font.cute_font_url,
@@ -79,6 +96,9 @@ class BoxCore:
         emoji_target: Path | None = emoji_font_path
         if config.font.skip_emoji_font:
             emoji_target = None
+        elif builtin_emoji.is_file():
+            emoji_target = builtin_emoji
+            logger.info(f"使用内置 Emoji 字体: {builtin_emoji}")
         elif not emoji_font_path.is_file() and config.font.emoji_font_url:
             logger.info("Emoji 字体不存在，尝试下载…")
             ok = await download_file(

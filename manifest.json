@@ -1,7 +1,7 @@
 {
     "name": "box_plugin",
-    "version": "2.0.0",
-    "description": "开盒插件：基于 OneBot 协议获取 QQ 用户信息，并以图片卡片形式展示",
+    "version": "2.0.0-full",
+    "description": "开盒插件 -full 版（自带中文与 Emoji 字体）：基于 OneBot 协议获取 QQ 用户信息，并以图片卡片形式展示",
     "author": "Lycoris&ikun",
     "license": "GPL-3.0",
     "dependencies": {
