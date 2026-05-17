@@ -9,6 +9,10 @@ __pycache__/
 # 本地配置文件副本（请使用 config/plugins/box_plugin/config.toml）
 config.toml
 
+# mpdt 构建产物
+dist/
+*.mfp
+
 # 编辑器
 .vscode/
 .idea/
