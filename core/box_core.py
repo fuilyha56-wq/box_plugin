@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 logger = get_logger("box_plugin.core")
 
 
-# 字体文件名（保存到 plugin_dir/data/fonts/ 下）
+# 字体文件名（保存到 <cwd>/data/box_plugin/fonts/ 下，跨启动持久化）
 _CUTE_FONT_FILENAME = "cute_font.ttf"
 _EMOJI_FONT_FILENAME = "NotoColorEmoji.ttf"
 _LATIN_FONT_FILENAME = "NotoSans-Regular.ttf"
@@ -54,15 +54,19 @@ class BoxCore:
         """初始化核心。
 
         Args:
-            plugin_dir: 插件目录
+            plugin_dir: 插件目录（仅用于读取打包内字体；`.mfp`/`.zip` 加载器
+                每次启动会解压到不同的临时目录，因此运行期数据不能放这里）
             plugin: 插件实例（用于读取配置）
         """
         self.plugin = plugin
         self.plugin_dir = Path(plugin_dir)
-        self.data_dir = self.plugin_dir / "data"
+        # 运行期数据目录：相对 Bot 工作目录（cwd），跨启动稳定。
+        # 这是 Neo-MoFox 标准插件持久化路径（参考 storage_api 的 data/{plugin_name}/）。
+        # 不能用 self.plugin_dir / "data"，因为插件每次启动都会被解压到新临时目录。
+        self.data_dir = Path("data") / "box_plugin"
         self.cache_dir = self.data_dir / "cache"
         self.font_dir = self.data_dir / "fonts"
-        # 打包内字体目录（full 版本会预置字体到此目录）
+        # 打包内字体目录（full 版本会预置字体到此目录，跟随插件包走）
         self.bundled_font_dir = self.plugin_dir / "font"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.font_dir.mkdir(parents=True, exist_ok=True)
@@ -134,6 +138,16 @@ class BoxCore:
                 except OSError as exc:
                     logger.warning(f"复制打包字体失败 {filename}: {exc}")
 
+    @staticmethod
+    def _purge_empty_font(path: Path) -> None:
+        """清理 0 字节的损坏字体文件，使下次启动重新触发下载。"""
+        try:
+            if path.is_file() and path.stat().st_size == 0:
+                path.unlink()
+                logger.warning(f"发现 0 字节字体文件，已清理: {path}")
+        except OSError as exc:
+            logger.warning(f"清理 0 字节字体失败 {path}: {exc}")
+
     async def prepare_resources(self) -> None:
         """确保字体资源就绪，并构建卡片渲染器。"""
         config = self._config()
@@ -144,6 +158,10 @@ class BoxCore:
 
         # full 版本：直接采用插件内置字体，跳过下载
         self._adopt_bundled_fonts()
+
+        # 清理可能存在的 0 字节损坏字体文件（让下次启动重新下载）
+        for path in (cute_font_path, emoji_font_path, latin_font_path, cjk_kr_font_path):
+            self._purge_empty_font(path)
 
         # 下载可爱字体
         if not cute_font_path.is_file() and config.font.cute_font_url:
